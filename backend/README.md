@@ -184,6 +184,21 @@ Optional fields:
 - `status`: `Todo`, `In Progress`, `Done`
 - `isPinned`
 
+Allowed categories:
+
+- `General`
+- `Programming`
+- `Work`
+- `Study`
+- `Personal`
+- `Ideas`
+
+Allowed statuses:
+
+- `Todo`
+- `In Progress`
+- `Done`
+
 Success response:
 
 ```json
