@@ -26,10 +26,7 @@ app.get("/", (req, res) => {
     return res.status(200).json({ message: "Hello from the backend!" });
 })
 
-app.post("/test",authMiddleware, (req, res)=>{
-        return res.status(200).json({ message: "Hello from the backend!", user: req.user });
 
-})
 
 
 
