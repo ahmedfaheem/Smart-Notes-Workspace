@@ -10,6 +10,7 @@ import { getNotes } from '../services/notes';
 import { useSelector } from 'react-redux';
 import IsLoading from '../components/Shared/IsLoading';
 import ErrorLoad from '../components/Shared/ErrorLoad';
+import PageHead from '../components/Shared/PageHead';
 
 export default function DashboardPage() {
 
@@ -22,7 +23,9 @@ export default function DashboardPage() {
   return (
     <>
 
-
+     <PageHead Pagetitle="Dashboard - Smart Notes"
+      description="Welcome to your Smart Notes Dashboard. Here you can view your recent notes, track your progress, and manage your notes efficiently."
+       />
        {isLoading && <IsLoading/> }
    
        {isError && !data && <ErrorLoad />}

@@ -6,9 +6,9 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import { ArrowLeft, Pin, Save, FileText, LoaderCircle  } from "lucide-react";
-import BackNav from "../components/Notes/manipulate/BackNav";
-import { createNote, getNote, updateNote } from "../services/notes";
-
+import BackNav from "../../components/Notes/manipulate/BackNav";
+import { createNote, getNote, updateNote } from "../../services/notes";
+import PageHead from "../../components/Shared/PageHead";
 const CATEGORIES = [
   "General",
   "Programming",
@@ -92,7 +92,12 @@ export default function ManipulateNote({ mode }) {
     saveMutation(data);
   };
 
-  return (
+  return (<>
+
+    <PageHead Pagetitle={isEditMode ? "Edit Note" : "Create Note"}
+      description={isEditMode ? "Edit your note in Smart Notes App" : "Create a new note in Smart Notes App"}
+       />
+      
     <div className="max-w-4xl mx-auto">
       {/* Back nav */}
 
@@ -263,5 +268,6 @@ export default function ManipulateNote({ mode }) {
         )}
       </div>
     </div>
+    </>
   );
 }

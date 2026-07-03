@@ -6,7 +6,7 @@ import Features from '../components/Home/Features';
 import Testimonials from '../components/Home/Testimonials';
 import Footer from '../components/Home/Footer';
 import { useSelector } from 'react-redux';
-
+import PageHead from '../components/Shared/PageHead';
 
 
 export default function HomePage() {
@@ -15,7 +15,10 @@ export default function HomePage() {
 
 
 
-  return (
+  return (<>
+     <PageHead Pagetitle="Smart Notes - Home"
+      description="Smart Notes is a powerful note-taking app that helps you capture, organize, and manage your ideas effectively."
+       />
     <div className="min-h-screen bg-white dark:bg-[#0A0A0A] text-gray-900 dark:text-gray-100 transition-colors duration-300 overflow-x-hidden">
 
       {/* ── Navbar ── */}
@@ -113,5 +116,6 @@ export default function HomePage() {
       {/* ── Footer ── */}
        <Footer />
     </div>
+    </>
   );
 }

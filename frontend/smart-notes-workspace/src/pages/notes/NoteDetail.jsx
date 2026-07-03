@@ -2,10 +2,11 @@ import { useState } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import { ArrowLeft, Pin, Pencil, Trash2, Calendar, Tag } from 'lucide-react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { getNote } from '../services/notes';
+import { getNote } from '../../services/notes';
 import { useSelector } from 'react-redux';
-import { deleteNote as deleteNoteApi , setNotePin} from '../services/notes';
-import IsLoading from '../components/Shared/IsLoading';
+import { deleteNote as deleteNoteApi , setNotePin} from '../../services/notes';
+import IsLoading from '../../components/Shared/IsLoading';
+import PageHead from '../../components/Shared/PageHead';
 export default function NoteDetail() {
   const { id } = useParams();
   const navigate = useNavigate();
@@ -57,7 +58,10 @@ export default function NoteDetail() {
 
 
 return <>
-   
+   <PageHead Pagetitle={note?.title || 'Note Detail'}
+      description={note?.content || 'View your note details in Smart Notes App'}
+       />
+
    {isLoading &&  
     <IsLoading/>
     }

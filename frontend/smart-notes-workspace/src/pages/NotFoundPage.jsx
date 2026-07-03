@@ -1,10 +1,13 @@
 import { Link, useNavigate } from 'react-router-dom';
 import { ArrowLeft, Home, FileSearch } from 'lucide-react';
-
+import PageHead from '../components/Shared/PageHead';
 export default function NotFoundPage() {
   const navigate = useNavigate();
 
-  return (
+  return (<>
+  <PageHead Pagetitle="404 - Page Not Found"
+      description="The page you are looking for does not exist. Return to the home page or go back to the previous page."
+       />
     <div className="min-h-screen bg-white dark:bg-[#0A0A0A] text-gray-900 dark:text-gray-100 flex flex-col items-center justify-center px-6 transition-colors duration-300 relative overflow-hidden">
 
     
@@ -58,5 +61,6 @@ export default function NotFoundPage() {
         Smart<span className="text-indigo-500">Notes</span> · Error 404
       </p>
     </div>
+    </>
   );
 }

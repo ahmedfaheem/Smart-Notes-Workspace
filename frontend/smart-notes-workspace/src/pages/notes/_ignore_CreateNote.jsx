@@ -1,12 +1,12 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { ArrowLeft, Pin, Save, FileText } from "lucide-react";
-import BackNav from "../components/Notes/manipulate/BackNav";
+import BackNav from "../../components/Notes/manipulate/BackNav";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import { useMutation } from "@tanstack/react-query";
-import { createNote } from "../services/notes";
+import { createNote } from "../../services/notes";
 import { useSelector } from "react-redux";
 
 

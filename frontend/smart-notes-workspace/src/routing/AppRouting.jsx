@@ -7,9 +7,9 @@ import DashboardPage from "../pages/Dashboard";
 import ProfilePage from "../pages/ProfilePage";
 import HomePage from "../pages/HomePage";
 import NotFoundPage from "../pages/NotFoundPage";
-import NotesList from "../pages/NotesList";
-import NoteDetail from "../pages/NoteDetail";
-import ManipulateNote from "../pages/ManipulateNote";
+import NotesList from "../pages/notes/NotesList";
+import NoteDetail from "../pages/notes/NoteDetail";
+import ManipulateNote from "../pages/notes/ManipulateNote";
 import ProtectedAuthRoute from "./ProtectedRoutes/ProtectedAuthRoute";
 import ProtectedUserRoute from "./ProtectedRoutes/ProtectedUserRoute";
 const routes = createBrowserRouter([

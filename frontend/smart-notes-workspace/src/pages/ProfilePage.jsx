@@ -9,6 +9,7 @@ import { editUserName } from "../services/auth";
 import { useState } from "react";
 import ErrorAlert from "../components/Shared/ErrorAlert";
 import SuccessAlert from "../components/Shared/SuccessAlert";
+import PageHead from "../components/Shared/PageHead";
 
 export default function ProfilePage() {
   const token = useSelector((state) => state.auth.token);
@@ -52,7 +53,13 @@ export default function ProfilePage() {
     
   };
 
-  return (
+  return (<>
+     <PageHead Pagetitle="Profile Settings"
+      description="Manage your profile settings in Smart Notes App"
+       />
+
+
+
     <div className="max-w-3xl mx-auto w-full">
       <h2 className="text-2xl font-semibold tracking-tight mb-8">
         Profile Settings
@@ -119,5 +126,6 @@ export default function ProfilePage() {
         )}
       </div>
     </div>
+    </>
   );
 }

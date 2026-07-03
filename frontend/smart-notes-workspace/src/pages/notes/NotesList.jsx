@@ -1,16 +1,16 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { Plus, Search as SearchIcon, StickyNote, ChevronLeft, ChevronRight } from 'lucide-react';
-import NoteCard from '../components/Notes/List/NoteCard';
-import Header from '../components/Notes/List/Header';
-import SearchBar from '../components/Notes/List/Search';
-import NotesGrid from '../components/Notes/List/NotesGrid';
-import Pagination from '../components/Notes/List/Pagination';
+import NoteCard from '../../components/Notes/List/NoteCard';
+import Header from '../../components/Notes/List/Header';
+import SearchBar from '../../components/Notes/List/Search';
+import NotesGrid from '../../components/Notes/List/NotesGrid';
+import Pagination from '../../components/Notes/List/Pagination';
 import { useSelector } from 'react-redux';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'; 
-import { getNotes, deleteNote as deleteNoteApi, setNotePin } from '../services/notes';
-import IsLoading from '../components/Shared/IsLoading';
-
+import { getNotes, deleteNote as deleteNoteApi, setNotePin } from '../../services/notes';
+import IsLoading from '../../components/Shared/IsLoading';
+import PageHead from '../../components/Shared/PageHead';
 
 
 const TABS = ['All', 'Pinned', 'Todo', 'In Progress', 'Done'];
@@ -78,7 +78,9 @@ export default function NotesList() {
 
   return (
     <>
-      
+      <PageHead Pagetitle="Notes List"
+      description="View and manage your notes in Smart Notes App"
+       />
       <Header totalNotes={totalNotes} search={search} tab={tab} />
 
    
