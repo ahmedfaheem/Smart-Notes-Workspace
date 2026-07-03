@@ -1,12 +1,20 @@
 # Smart Notes
 
-Full-stack note management app built with React, Express, and MongoDB. Users can register, log in, create notes, view notes, search and filter notes, paginate through results, and manage note details.
+Smart Notes is a full-stack note management app built with React, Express, and MongoDB. It supports user authentication, note creation, note details, editing, deletion, search, filtering, pagination, pinned notes, categories, tags, and status tracking.
+
+## Demo
+
+<video src="./demo.mp4" controls width="100%" title="Smart Notes demo"></video>
+
+If the video preview is not available in your Markdown viewer, open [demo.mp4](./demo.mp4).
 
 ## Project Structure
 
 ```text
 .
-  backend/                         Express API and MongoDB models
+  README.md
+  demo.mp4
+  backend/                         Express API, auth, validation, and MongoDB models
   frontend/
     smart-notes-workspace/         React + Vite frontend
 ```
@@ -15,7 +23,7 @@ Full-stack note management app built with React, Express, and MongoDB. Users can
 
 Frontend:
 
-- React
+- React 19
 - Vite
 - React Router
 - Redux Toolkit
@@ -24,6 +32,7 @@ Frontend:
 - Axios
 - React Hook Form
 - Zod
+- Lucide React
 
 Backend:
 
@@ -35,23 +44,28 @@ Backend:
 - bcrypt
 - Zod
 
+## Features
+
+- Register, log in, and load the current user profile
+- Create, read, update, and delete notes
+- Search and filter notes
+- Paginate note results
+- Mark notes as pinned
+- Organize notes by category, tags, and status
+- Protect API routes with JWT authentication
+
 ## Prerequisites
 
 - Node.js
 - npm
 - MongoDB connection string
 
-## Backend Setup
+## Quick Start
 
-Go to the backend folder:
+### 1. Start the Backend
 
 ```bash
 cd backend
-```
-
-Install dependencies:
-
-```bash
 npm install
 ```
 
@@ -63,7 +77,7 @@ MONGO_URI=your_mongodb_connection_string
 JWT_SECRET=your_secret_key
 ```
 
-Start the API:
+Run the API:
 
 ```bash
 npm run dev
@@ -75,23 +89,13 @@ The backend runs on:
 http://localhost:5000
 ```
 
-## Frontend Setup
+### 2. Start the Frontend
 
-Open a second terminal and go to the frontend folder:
+Open a second terminal:
 
 ```bash
 cd frontend/smart-notes-workspace
-```
-
-Install dependencies:
-
-```bash
 npm install
-```
-
-Start the Vite dev server:
-
-```bash
 npm run dev
 ```
 
@@ -177,10 +181,10 @@ Allowed categories:
 ## Documentation
 
 - Postman API documentation: https://documenter.getpostman.com/view/48604520/2sBY4HU4Dv
-- Backend API details: `backend/README.md`
-- Frontend details: `frontend/smart-notes-workspace/README.md`
+- Backend API details: [backend/README.md](./backend/README.md)
+- Frontend details: [frontend/smart-notes-workspace/README.md](./frontend/smart-notes-workspace/README.md)
 
-## Build Frontend
+## Production Build
 
 ```bash
 cd frontend/smart-notes-workspace
