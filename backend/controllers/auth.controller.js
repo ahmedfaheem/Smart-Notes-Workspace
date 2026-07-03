@@ -87,8 +87,30 @@ const getMe = asyncHandler(async (req, res)=>{
    
 
 });
+
+
+const editUserName = asyncHandler(async (req, res) => {
+  const userID = req.user.id;
+  const { name } = req.body;
+
+  if (!userID) {
+    res.status(401);
+    throw new Error("User ID not found");
+  }
+  const user = await User.findByIdAndUpdate(userID, { name }, { new: true }).select("-password");
+
+
+  if (!user) {
+    res.status(404);
+    throw new Error("User not found");
+  }
+
+  return res.json({ success: true, user });
+});
+
 module.exports = {
   register,
   login,
-  getMe
+  getMe,
+  editUserName
 };

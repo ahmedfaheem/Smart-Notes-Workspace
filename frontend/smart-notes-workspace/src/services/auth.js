@@ -13,4 +13,22 @@ async function loginUser(data) {
 }
 
 
-  export { createUser, loginUser };
+async function getUserProfile(token) {
+  const response = await axios.get('http://localhost:5000/auth/me', {
+    headers: {
+      'Authorization': `Bearer ${token}`
+    }
+  });
+  return response.data;
+}
+
+async function editUserName(token, newName) {
+  const response = await axios.put('http://localhost:5000/auth/me', { name: newName }, {
+    headers: {
+      'Authorization': `Bearer ${token}`
+    }
+  });
+  return response.data;
+}
+
+export { createUser, loginUser, getUserProfile, editUserName };
