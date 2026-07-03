@@ -1,7 +1,10 @@
 import { Link } from "react-router-dom";
 import ThemeToggle from "../Shared/ThemeToggle";
-
+import { useSelector } from "react-redux";
 export default function NavBar() {
+
+  const isLoggedIn = useSelector((state) => state.auth.isLoggedIn);
+
   return (
      <header className="sticky top-0 z-50 border-b border-gray-100 dark:border-white/5 bg-white/80 dark:bg-[#0A0A0A]/80 backdrop-blur-xl transition-colors duration-300">
         <div className="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between">
@@ -20,15 +23,23 @@ export default function NavBar() {
           {/* Actions */}
           <div className="flex items-center gap-2">
             <ThemeToggle />
-            <Link to="/login" className="hidden sm:inline-flex text-sm font-medium text-gray-600 dark:text-gray-300 hover:text-black dark:hover:text-white px-4 py-2 transition-colors">
-              Sign in
-            </Link>
-            <Link
-              to="/register"
-              className="bg-black dark:bg-white text-white dark:text-black text-sm font-semibold px-4 py-2 rounded-xl hover:opacity-90 active:scale-95 transition-all shadow-md"
-            >
-              Get Started
-            </Link>
+            {isLoggedIn ? (
+              <Link to="/dashboard/profile" className="bg-black dark:bg-white text-white dark:text-black text-sm font-semibold px-4 py-2 rounded-xl hover:opacity-90 active:scale-95 transition-all shadow-md">
+                Profile
+              </Link>
+            ) : (
+              <Link to="/login" className="hidden sm:inline-flex text-sm font-medium text-gray-600 dark:text-gray-300 hover:text-black dark:hover:text-white px-4 py-2 transition-colors">
+                Sign in
+              </Link>
+            )}
+            {!isLoggedIn && (
+              <Link
+                to="/register"
+                className="bg-black dark:bg-white text-white dark:text-black text-sm font-semibold px-4 py-2 rounded-xl hover:opacity-90 active:scale-95 transition-all shadow-md"
+              >
+                Get Started
+              </Link>
+            )}
           </div>
         </div>
       </header>

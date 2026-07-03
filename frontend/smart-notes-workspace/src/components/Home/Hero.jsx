@@ -1,7 +1,10 @@
 import { Link } from "react-router-dom";
 import { ArrowRight, ChevronRight } from "lucide-react";
+import { useSelector } from "react-redux";
 export default function Hero() {
     
+  const isLoggedIn = useSelector((state) => state.auth.isLoggedIn);
+
   const fakeNotes = [
     {
       title: "Q3 Marketing Strategy",
@@ -85,20 +88,31 @@ export default function Hero() {
 
       {/* CTAs */}
       <div className="flex flex-col sm:flex-row gap-3 justify-center items-center">
-        <Link
-          to="/register"
-          className="group inline-flex items-center gap-2 bg-black dark:bg-white text-white dark:text-black font-semibold px-7 py-3.5 rounded-2xl hover:opacity-90 active:scale-95 transition-all shadow-xl shadow-black/10 dark:shadow-white/5 text-base"
-        >
-          Start for free
-          <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-        </Link>
-        <Link
-          to="/login"
-          className="inline-flex items-center gap-2 text-gray-600 dark:text-gray-300 font-medium px-7 py-3.5 rounded-2xl border border-gray-200 dark:border-white/10 hover:bg-gray-50 dark:hover:bg-white/5 transition-all text-base"
-        >
-          Sign in
-          <ChevronRight className="w-4 h-4 opacity-50" />
-        </Link>
+        {isLoggedIn ? (
+          <Link
+            to="/dashboard/profile"
+            className="group inline-flex items-center gap-2 bg-black dark:bg-white text-white dark:text-black font-semibold px-7 py-3.5 rounded-2xl hover:opacity-90 active:scale-95 transition-all shadow-xl shadow-black/10 dark:shadow-white/5 text-base"
+          >
+            View Profile
+          </Link>
+        ) : ( <>
+          <Link
+            to="/register"
+            className="group inline-flex items-center gap-2 bg-black dark:bg-white text-white dark:text-black font-semibold px-7 py-3.5 rounded-2xl hover:opacity-90 active:scale-95 transition-all shadow-xl shadow-black/10 dark:shadow-white/5 text-base"
+          >
+            Start for free
+            <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+          </Link>
+          <Link
+            to="/login"
+            className="inline-flex items-center gap-2 text-gray-600 dark:text-gray-300 font-medium px-7 py-3.5 rounded-2xl border border-gray-200 dark:border-white/10 hover:bg-gray-50 dark:hover:bg-white/5 transition-all text-base"
+          >
+            Sign in
+            <ChevronRight className="w-4 h-4 opacity-50" />
+          </Link>
+          </>
+        )}
+  
       </div>
 
       {/* Hero mockup */}

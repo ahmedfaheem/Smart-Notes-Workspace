@@ -103,7 +103,7 @@ export default function ProfilePage() {
                 <button
                   type="submit"
                   disabled={isPending}
-                  className="bg-black dark:bg-white text-white dark:text-black px-6 py-2.5 rounded-xl text-sm font-medium hover:opacity-90 transition-opacity shadow-sm"
+                  className="cursor-pointer bg-black dark:bg-white text-white dark:text-black px-6 py-2.5 rounded-xl text-sm font-medium hover:opacity-90 transition-opacity shadow-sm"
                 >
                   {isPending ? "Saving..." : "Save Changes"}
                 </button>

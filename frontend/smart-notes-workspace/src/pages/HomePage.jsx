@@ -5,13 +5,14 @@ import NavBar from '../components/Home/NavBar';
 import Features from '../components/Home/Features';
 import Testimonials from '../components/Home/Testimonials';
 import Footer from '../components/Home/Footer';
-
+import { useSelector } from 'react-redux';
 
 
 
 export default function HomePage() {
    
-  
+    const isLoggedIn = useSelector((state) => state.auth.isLoggedIn);
+
 
 
   return (
@@ -96,14 +97,16 @@ export default function HomePage() {
           <p className="text-gray-500 dark:text-gray-400 mb-10 text-lg">
             Free to use. No credit card needed. Your workspace, your rules.
           </p>
+
           <Link
-            to="/register"
+            to={isLoggedIn ? "/dashboard" : "/register"}
             className="group inline-flex items-center gap-2.5 bg-black dark:bg-white text-white dark:text-black font-semibold px-8 py-4 rounded-2xl text-base hover:opacity-90 active:scale-95 transition-all shadow-2xl shadow-black/15 dark:shadow-white/5"
           >
             Create your workspace
             <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
           </Link>
-          <p className="text-sm text-gray-400 mt-5">Already have an account? <Link to="/login" className="text-indigo-500 hover:underline font-medium">Sign in</Link></p>
+
+     {!isLoggedIn   &&  <p className="text-sm text-gray-400 mt-5">Already have an account? <Link to="/login" className="text-indigo-500 hover:underline font-medium">Sign in</Link></p>}
         </div>
       </section>
 
