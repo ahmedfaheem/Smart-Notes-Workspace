@@ -9,8 +9,7 @@ import HomePage from "../pages/HomePage";
 import NotFoundPage from "../pages/NotFoundPage";
 import NotesList from "../pages/NotesList";
 import NoteDetail from "../pages/NoteDetail";
-import CreateNote from "../pages/CreateNote";
-import EditNote from "../pages/EditNote";
+import ManipulateNote from "../pages/ManipulateNote";
 import ProtectedAuthRoute from "./ProtectedRoutes/ProtectedAuthRoute";
 import ProtectedUserRoute from "./ProtectedRoutes/ProtectedUserRoute";
 const routes = createBrowserRouter([
@@ -35,9 +34,9 @@ const routes = createBrowserRouter([
         children: [
             { index: true,              element: <DashboardPage /> },
             { path: "notes",            element: <NotesList /> },
-            { path: "notes/create",     element: <CreateNote /> },
+            { path: "notes/create",     element: <ManipulateNote /> },
             { path: "notes/:id",        element: <NoteDetail /> },
-            { path: "notes/:id/edit",   element: <EditNote /> },
+            { path: "notes/:id/edit",   element: <ManipulateNote mode="edit" /> },
             { path: "profile",          element: <ProfilePage /> },
         ],
     },

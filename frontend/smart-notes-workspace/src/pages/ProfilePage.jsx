@@ -37,7 +37,7 @@ export default function ProfilePage() {
   const { mutate, isPending, isError, error } = useMutation({
     mutationFn: (newName) => editUserName(token, newName),
     onSuccess: (data) => {
-      refetch();
+      refetch(["userProfile", token]);
       setSuccessMessage("Name updated successfully!");
     },
     onError: (error) => {
@@ -85,7 +85,7 @@ export default function ProfilePage() {
                     {...register("name")}
                     type="text"
                     className="w-full px-4 py-2.5 border border-gray-300 dark:border-white/10 rounded-xl bg-transparent focus:ring-2 focus:ring-black dark:focus:ring-white transition-all"
-                    defaultValue={data.user?.name}
+                    defaultValue={data?.user?.name}
                   />
                 </div>
               </div>
@@ -96,7 +96,7 @@ export default function ProfilePage() {
                 <input
                   type="email"
                   className="w-full px-4 py-2.5 border border-gray-300 dark:border-white/10 rounded-xl bg-gray-50 dark:bg-white/5 opacity-70 cursor-not-allowed"
-                  defaultValue={data.user?.email}
+                  defaultValue={data?.user?.email}
                   disabled
                 />
               </div>

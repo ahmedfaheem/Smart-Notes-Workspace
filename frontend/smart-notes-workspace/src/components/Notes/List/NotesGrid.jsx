@@ -2,7 +2,7 @@ import { StickyNote, Search as SearchIcon } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import NoteCard from './NoteCard';
 import { Plus } from 'lucide-react';
-export default function NotesGrid({ totalPages, paginated, search, deleteNote, togglePin }) {
+export default function NotesGrid({ totalPages, paginated, search }) {
   return (
    <>
        {totalPages === 0 ? (
@@ -26,7 +26,7 @@ export default function NotesGrid({ totalPages, paginated, search, deleteNote, t
        
           <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-5 min-h-[280px]">
             {paginated.map(note => (
-              <NoteCard key={note._id} note={note} onDelete={deleteNote} onTogglePin={togglePin} />
+              <NoteCard key={note._id} note={note}  />
             ))}
           </div>
         )}

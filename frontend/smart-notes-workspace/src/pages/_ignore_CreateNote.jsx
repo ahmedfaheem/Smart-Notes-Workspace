@@ -35,10 +35,10 @@ export default function CreateNote() {
     title: z.string().min(1, { message: "Title is required" }),
     content: z.string().min(1, { message: "Content is required" }),
     status: z.enum(STATUS),
-    pinned: z.boolean(),
+    isPinned: z.boolean(),
     category: z.string().optional(),
   });
-  const {
+  const { 
     register,
     handleSubmit,
     watch,
@@ -48,7 +48,7 @@ export default function CreateNote() {
     resolver: zodResolver(schema),
   });
 
-  const isPinned = watch('pinned', false);
+  const isPinned = watch('isPinned', false);
   let content = watch('content', '');
 
  const {mutate, isLoading, isError, error} = useMutation({
@@ -168,7 +168,7 @@ export default function CreateNote() {
             >
               <input
                 type="checkbox"
-                {...register("pinned")}
+                {...register("isPinned")}
                 className="sr-only"
               />
 

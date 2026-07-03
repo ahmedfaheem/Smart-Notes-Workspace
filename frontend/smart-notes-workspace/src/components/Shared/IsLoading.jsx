@@ -9,10 +9,10 @@ export default function IsLoading() {
   </div>
   
   <h3 className="font-semibold text-lg text-gray-900 dark:text-gray-100 mb-1.5">
-    Loading note...
+    Loading...
   </h3>
   <p className="text-sm text-gray-500 dark:text-gray-400 max-w-sm mx-auto">
-    Please wait while we fetch the note details.
+    Please wait while we are fetching.
   </p>
 </div>
   )

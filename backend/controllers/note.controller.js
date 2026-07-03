@@ -58,8 +58,7 @@ const getNotes = asyncHandler(async (req, res) => {
      }
 
      const notes = await Note.find(filter).sort({
-        isPinned:-1,
-        created_at: -1
+        createdAt: -1
      }).skip(skip).limit(limit);
 
      if(!notes){

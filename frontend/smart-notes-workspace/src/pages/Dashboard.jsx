@@ -5,24 +5,35 @@ import NoteCard from '../components/Notes/List/NoteCard';
 import Header from '../components/Dashboard/Header';
 import Stats from '../components/Dashboard/Stats';
 import RecentNotes from '../components/Dashboard/RecentNotes';
-
+import { useQuery } from '@tanstack/react-query';
+import { getNotes } from '../services/notes';
 import { useSelector } from 'react-redux';
-
+import IsLoading from '../components/Shared/IsLoading';
+import ErrorLoad from '../components/Shared/ErrorLoad';
 
 export default function DashboardPage() {
-const data = useSelector((state) => state.auth);
-  console.log(data);
+
+    const token = useSelector(state => state.auth.token);
+   const { data, isLoading, isError } = useQuery({
+    queryKey: ['notes'],
+    queryFn: () => getNotes(token),
+    });
 
   return (
     <>
-      {/* Header */}
-       <Header />
 
-      {/* Stats */}
-       <Stats />
-       
-      {/* Recent Notes */}
-       <RecentNotes />
+
+       {isLoading && <IsLoading/> }
+   
+       {isError && !data && <ErrorLoad />}
+
+       {data && !isLoading && !isError && (<>
+         <Header />
+         <Stats data={data} />
+         <RecentNotes data={data} />
+         </>
+       )}
+
     </>
   );
 }
