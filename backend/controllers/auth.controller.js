@@ -97,7 +97,7 @@ const editUserName = asyncHandler(async (req, res) => {
     res.status(401);
     throw new Error("User ID not found");
   }
-  const user = await User.findByIdAndUpdate(userID, { name }, { new: true }).select("-password");
+  const user = await User.findByIdAndUpdate(userID, { name }, {returnDocument: "after",}).select("-password");
 
 
   if (!user) {

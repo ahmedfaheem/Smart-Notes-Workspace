@@ -2,13 +2,13 @@ import { Link } from 'react-router-dom';
 import { Plus } from 'lucide-react';
 
 
-export default function Header({filtered, search, tab}) {
+export default function Header({totalNotes, search, tab}) {
   return (
       <div className="flex items-center justify-between mb-8">
         <div>
           <h2 className="text-2xl font-bold tracking-tight">All Notes</h2>
           <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
-            {filtered.length} {filtered.length === 1 ? 'note' : 'notes'}{search || tab !== 'All' ? ' found' : ' in your workspace'}
+            {totalNotes} {totalNotes === 1 ? 'note' : 'notes'}{search || tab !== 'All' ? ' found' : ' in your workspace'}
           </p>
         </div>
         <Link

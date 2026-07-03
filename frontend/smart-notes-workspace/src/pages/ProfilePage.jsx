@@ -13,7 +13,7 @@ import SuccessAlert from "../components/Shared/SuccessAlert";
 export default function ProfilePage() {
   const token = useSelector((state) => state.auth.token);
 
-  const { data, isLoading } = useQuery({
+  const { data, isLoading, refetch } = useQuery({
     queryKey: ["userProfile", token],
     queryFn: () => getUserProfile(token),
   });
@@ -37,6 +37,7 @@ export default function ProfilePage() {
   const { mutate, isPending, isError, error } = useMutation({
     mutationFn: (newName) => editUserName(token, newName),
     onSuccess: (data) => {
+      refetch();
       setSuccessMessage("Name updated successfully!");
     },
     onError: (error) => {

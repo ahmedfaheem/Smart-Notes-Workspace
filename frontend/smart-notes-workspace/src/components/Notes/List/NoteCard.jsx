@@ -9,10 +9,10 @@ export default function NoteCard({ note, onDelete, onTogglePin }) {
       <div className="flex justify-between items-start mb-3 relative z-10">
         <h4 className="font-semibold text-lg tracking-tight truncate pr-6 text-gray-900 dark:text-gray-100">{note.title}</h4>
         <button
-          onClick={(e) => { e.stopPropagation(); onTogglePin(note.id); }}
-          className={`transition-colors duration-200 ${note.pinned ? 'text-black dark:text-white' : 'text-gray-400 hover:text-indigo-500'}`}
+          onClick={(e) => { e.stopPropagation(); onTogglePin(note._id, note.isPinned); }}
+          className={`transition-colors duration-200 ${note.isPinned ? 'text-black dark:text-white' : 'text-gray-400 hover:text-indigo-500'}`}
         >
-          <Pin className={`w-4 h-4 ${note.pinned ? 'fill-current' : ''}`} />
+          <Pin className={`w-4 h-4 ${note.isPinned ? 'fill-current' : ''}`} />
         </button>
       </div>
 
@@ -29,13 +29,13 @@ export default function NoteCard({ note, onDelete, onTogglePin }) {
 
         <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-all duration-200">
           <button
-            onClick={(e) => { e.stopPropagation(); onDelete(note.id); }}
+            onClick={(e) => { e.stopPropagation(); onDelete(note._id); }}
             className="p-1.5 text-red-500 hover:bg-red-50 dark:hover:bg-red-500/10 rounded-lg transition-all"
           >
             <Trash2 className="w-3.5 h-3.5" />
           </button>
           <Link
-            to={`/dashboard/notes/${note.id}`}
+            to={`/dashboard/notes/${note._id}`}
             onClick={e => e.stopPropagation()}
             className="p-1.5 text-indigo-500 hover:bg-indigo-50 dark:hover:bg-indigo-500/10 rounded-lg transition-all"
           >

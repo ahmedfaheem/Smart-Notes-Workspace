@@ -6,6 +6,9 @@ import Header from '../components/Notes/List/Header';
 import SearchBar from '../components/Notes/List/Search';
 import NotesGrid from '../components/Notes/List/NotesGrid';
 import Pagination from '../components/Notes/List/Pagination';
+import { useSelector } from 'react-redux';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'; 
+import { getNotes, deleteNote as deleteNoteApi, setNotePin } from '../services/notes';
 
 const ALL_NOTES = [
   { id: 1,  title: 'Q3 Marketing Strategy',      content: 'Focus on inbound leads and content marketing. Key initiatives include SEO optimization, social media campaigns targeting millennials, and a quarterly newsletter.',    status: 'published', pinned: true,  createdAt: '2026-06-15', tag: 'Marketing'   },
@@ -22,37 +25,76 @@ const ALL_NOTES = [
   { id: 12, title: 'Accessibility Audit Notes',    content: 'All buttons need aria-labels. Color contrast ratio must meet WCAG AA (4.5:1). Focus indicators missing on custom components. Screen-reader testing scheduled.',        status: 'draft',     pinned: false, createdAt: '2026-07-08', tag: 'Engineering' },
 ];
 
-const TABS        = ['All', 'Pinned', 'Published', 'Draft'];
-const PER_PAGE    = 3;
+
+const TABS = ['All', 'Pinned', 'Todo', 'In Progress', 'Done'];
+const PER_PAGE = 3;
 
 export default function NotesList() {
-  const [notes,   setNotes]   = useState(ALL_NOTES);
-  const [search,  setSearch]  = useState('');
-  const [tab,     setTab]     = useState('All');
-  const [page,    setPage]    = useState(1);
+  const token = useSelector(state => state.auth.token);
+  const queryClient = useQueryClient();
 
-  const togglePin  = (id) => setNotes(prev => prev.map(n => n.id === id ? { ...n, pinned: !n.pinned } : n));
-  const deleteNote = (id) => setNotes(prev => prev.filter(n => n.id !== id));
 
-  const handleSetTabs = (value) => setTab(value);
-  const handleSetSearch = (value) => setSearch(value);
-  // Reset to page 1 whenever search or tab changes
-  useEffect(() => { setPage(1); }, [search, tab]);
+  const [search, setSearch] = useState('');
+  const [tab, setTab] = useState('All');
+  const [page, setPage] = useState(1);
 
-  const filtered = notes.filter(n => {
-    const q   = search.toLowerCase();
-    const hit = n.title.toLowerCase().includes(q) || n.content.toLowerCase().includes(q);
-    const ok  = tab === 'All'       ? true
-              : tab === 'Pinned'    ? n.pinned
-              : tab === 'Published' ? n.status === 'published'
-              :                       n.status === 'draft';
-    return hit && ok;
+
+  const handleSetSearch = (value) => { 
+    setSearch(value); 
+    setPage(1); 
+  };
+  const handleSetTabs = (value) => { 
+    setTab(value); 
+    setPage(1); 
+  };
+
+  const filter= {
+     search:search,
+     status: (tab == 'All' || tab == 'Pinned') ? '' : tab,
+     limit: PER_PAGE,
+     page: page,
+     isPinned: tab === 'Pinned' ? true : ''
+    }
+
+  const { data: fetchedData, isLoading, isError } = useQuery({
+    queryKey: ['notes', { page, search, tab }],
+    queryFn: () => getNotes(token, filter),
   });
 
-  const totalPages  = Math.max(1, Math.ceil(filtered.length / PER_PAGE));
-  const safePage    = Math.min(page, totalPages);
-  const start       = (safePage - 1) * PER_PAGE;
-  const paginated   = filtered.slice(start, start + PER_PAGE);
+ 
+  const notes = fetchedData?.notes || [];
+  const totalPages = fetchedData?.pagination?.totalPages || 1;
+  const safePage = fetchedData?.pagination?.page || 1;
+  const totalNotes = fetchedData?.pagination?.totalNotes || 0;
+
+  // 5. Mutations (For deleting and pinning)
+  const togglePinMutation = useMutation({
+    mutationFn: (noteData) =>  setNotePin(token, noteData.id, noteData.isPinned), 
+    onSuccess: () =>{ 
+       queryClient.invalidateQueries({ queryKey: ['notes'] });
+     
+    },
+    onError: (error) => {
+      console.error("Error toggling pin:", error);
+    }
+       });
+
+  const deleteMutation = useMutation({
+    mutationFn: (id) => deleteNoteApi(token , id), // Replace with your actual API call
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ['notes'] }),
+  });
+
+  const togglePin = (id, isPinned) => {
+     togglePinMutation.mutate({id, isPinned: !isPinned}); // Pass the toggled status to the mutation
+     
+  };
+
+  const deleteNote = (id) => {
+    deleteMutation.mutate(id); 
+  };
+
+  
+  const start = (safePage - 1) * PER_PAGE;
 
   const goTo = (p) => {
     const clamped = Math.max(1, Math.min(p, totalPages));
@@ -60,29 +102,52 @@ export default function NotesList() {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
-  // Build page number array with ellipsis logic
   const getPageNumbers = () => {
-    if (totalPages <= 5) return Array.from({ length: totalPages }, (_, i) => i + 1);
-    if (safePage <= 3)   return [1, 2, 3, 4, '…', totalPages];
+    if (totalPages <= 5) return Array.from({length: totalPages }, (_, i) => i + 1);
+    if (safePage <= 3) return [1, 2, 3, 4, '…', totalPages];
     if (safePage >= totalPages - 2) return [1, '…', totalPages - 3, totalPages - 2, totalPages - 1, totalPages];
     return [1, '…', safePage - 1, safePage, safePage + 1, '…', totalPages];
   };
 
+
+  if (isLoading) return <p className="text-center py-10 text-gray-500">Loading notes...</p>;
+  if (isError) return <p className="text-center py-10 text-red-500">Failed to load notes.</p>;
+
   return (
     <>
       {/* Header */}
-     <Header filtered={filtered} search={search} tab={tab} />
+      {/* Note: I passed totalNotes here assuming Header displays "Found X notes" */}
+      <Header totalNotes={totalNotes} search={search} tab={tab} />
 
       {/* Search + Tabs */}
-      <SearchBar search={search} setSearch={handleSetSearch} tab={tab} setTab={handleSetTabs} TABS={TABS} />
+      <SearchBar 
+        search={search} 
+        setSearch={handleSetSearch} 
+        tab={tab} 
+        setTab={handleSetTabs} 
+        TABS={TABS} 
+      />
 
       {/* Notes grid */}
-      <NotesGrid filtered={filtered} paginated={paginated} search={search} deleteNote={deleteNote} togglePin={togglePin} />
+      {/* Since the backend only gives us the 3 notes for this page, `notes` is our paginated data */}
+      <NotesGrid 
+        totalPages={totalPages}
+        paginated={notes} 
+        search={search} 
+        deleteNote={deleteNote} 
+        togglePin={togglePin} 
+      />
 
-          {/* Pagination */}
-      <Pagination totalPages={totalPages} safePage={safePage} start={start} filtered={filtered} PER_PAGE={PER_PAGE} goTo={goTo} getPageNumbers={getPageNumbers} />
- 
-        </>
-      
+      {/* Pagination */}
+      <Pagination 
+        totalPages={totalPages} 
+        safePage={safePage} 
+        start={start} 
+        totalNotes={totalNotes} 
+        PER_PAGE={PER_PAGE} 
+        goTo={goTo} 
+        getPageNumbers={getPageNumbers} 
+      />
+    </>
   );
 }

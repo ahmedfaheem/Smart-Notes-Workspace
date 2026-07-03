@@ -1,6 +1,6 @@
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 
-export default function Pagination({ totalPages, safePage, start, filtered, PER_PAGE, goTo, getPageNumbers }) {
+export default function Pagination({ totalPages, safePage, start, totalNotes, PER_PAGE, goTo, getPageNumbers }) {
   return (
     <>
           {totalPages > 1 && (
@@ -11,10 +11,10 @@ export default function Pagination({ totalPages, safePage, start, filtered, PER_
                 <span className="font-semibold text-gray-900 dark:text-gray-100">{start + 1}</span>
                 {' '}–{' '}
                 <span className="font-semibold text-gray-900 dark:text-gray-100">
-                  {Math.min(start + PER_PAGE, filtered.length)}
+                  {Math.min(start + PER_PAGE, totalPages)}
                 </span>
                 {' '}of{' '}
-                <span className="font-semibold text-gray-900 dark:text-gray-100">{filtered.length}</span>
+                <span className="font-semibold text-gray-900 dark:text-gray-100">{totalPages}</span>
                 {' '}notes
               </p>
 

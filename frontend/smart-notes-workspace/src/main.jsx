@@ -19,7 +19,7 @@ if (token) {
 
 
 createRoot(document.getElementById('root')).render(
-  <StrictMode>
+  // <StrictMode>
     <ThemeProvider>
       <QueryClientProvider client={queryClient}>
          <Provider store={store}>
@@ -27,5 +27,5 @@ createRoot(document.getElementById('root')).render(
       </Provider>
       </QueryClientProvider>
     </ThemeProvider>
-  </StrictMode>,
+  // </StrictMode>,
 )

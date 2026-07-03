@@ -17,8 +17,7 @@ const createNote = async (req, res) => {
 }
 
 const getNotes = asyncHandler(async (req, res) => {
-     const {search, category, status} = req.query;
-
+     const {search, category, status, isPinned} = req.query;
      const page = Number(req.query.page) || 1;
      const limit = Number(req.query.limit) || 10;
 
@@ -43,7 +42,7 @@ const getNotes = asyncHandler(async (req, res) => {
                 }
             }
         ]
-     }
+     } 
 
 
      if(category){
@@ -52,6 +51,10 @@ const getNotes = asyncHandler(async (req, res) => {
 
      if(status){
         filter.status = status
+     }
+
+     if(isPinned){
+        filter.isPinned = true;
      }
 
      const notes = await Note.find(filter).sort({
