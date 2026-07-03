@@ -176,6 +176,7 @@ Allowed categories:
 
 ## Documentation
 
+- Postman API documentation: https://documenter.getpostman.com/view/48604520/2sBY4HU4Dv
 - Backend API details: `backend/README.md`
 - Frontend details: `frontend/smart-notes-workspace/README.md`
 
