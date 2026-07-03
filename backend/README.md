@@ -1,24 +1,34 @@
-# Notes API Backend
+# Smart Notes Backend
 
-Backend API for a note management app with user authentication, JWT protection, and MongoDB persistence.
+Express and MongoDB API for user authentication and note management. The API supports JWT-protected routes, request validation, user-scoped notes, search, filtering, and pagination.
 
 ## Tech Stack
 
+- Node.js
 - Express
 - MongoDB with Mongoose
-- JWT authentication
-- Zod validation
-- bcrypt password hashing
+- JSON Web Tokens
+- bcrypt
+- Zod
+- CORS
+- dotenv
+- nodemon
+
+## Prerequisites
+
+- Node.js
+- npm
+- MongoDB connection string
 
 ## Setup
 
-1. Install dependencies.
+Install dependencies:
 
 ```bash
 npm install
 ```
 
-2. Create a `.env` file in the `backend` folder.
+Create a `.env` file inside the `backend` folder:
 
 ```env
 PORT=5000
@@ -26,42 +36,49 @@ MONGO_URI=your_mongodb_connection_string
 JWT_SECRET=your_secret_key
 ```
 
-3. Start the development server.
+Start the development server:
 
 ```bash
 npm run dev
 ```
 
-The server runs on `http://localhost:<PORT>`.
+The API runs on:
+
+```text
+http://localhost:5000
+```
 
 ## Scripts
 
-| Script | Command | Description |
-| --- | --- | --- |
-| `start` | `node server.js` | Start the server in production mode |
-| `dev` | `nodemon server.js` | Start the server in development mode |
+| Script | Description |
+| --- | --- |
+| `npm run dev` | Start the API with nodemon |
+| `npm start` | Start the API with Node |
+| `npm test` | Placeholder test script |
 
 ## Authentication
 
-Most protected routes require a JWT token in the `Authorization` header.
+Protected routes require a JWT token:
 
 ```http
 Authorization: Bearer <token>
 ```
 
-You receive the token from the login endpoint.
-
-## API Base Paths
-
-- `/` health check
-- `/auth` authentication routes
-- `/notes` note routes
+The token is returned from `POST /auth/login`.
 
 ## Health Check
 
 | Method | Endpoint | Auth | Description |
 | --- | --- | --- | --- |
-| GET | `/` | No | Basic backend health check |
+| `GET` | `/` | No | Check that the backend is running |
+
+Success response:
+
+```json
+{
+  "message": "Hello from the backend!"
+}
+```
 
 ## Auth Routes
 
@@ -69,11 +86,16 @@ Base path: `/auth`
 
 | Method | Endpoint | Auth | Description |
 | --- | --- | --- | --- |
-| POST | `/auth/register` | No | Register a new user |
-| POST | `/auth/login` | No | Login and return a JWT token |
-| POST | `/auth/me` | Yes | Get the current authenticated user |
+| `POST` | `/auth/register` | No | Register a new user |
+| `POST` | `/auth/login` | No | Login and return a JWT token |
+| `GET` | `/auth/me` | Yes | Get the current user |
+| `PUT` | `/auth/me` | Yes | Update the current user's name |
 
-### POST /auth/register
+### Register
+
+```http
+POST /auth/register
+```
 
 Request body:
 
@@ -85,17 +107,11 @@ Request body:
 }
 ```
 
-Validation rules:
-
-- `name`: at least 3 characters
-- `email`: valid email
-- `password`: at least 8 characters
-
 Success response:
 
 ```json
 {
-  "sucess": true,
+  "success": true,
   "message": "User registered successfully",
   "user": {
     "name": "Ahmed Faheem",
@@ -104,7 +120,11 @@ Success response:
 }
 ```
 
-### POST /auth/login
+### Login
+
+```http
+POST /auth/login
+```
 
 Request body:
 
@@ -119,27 +139,54 @@ Success response:
 
 ```json
 {
-  "sucess": true,
+  "success": true,
   "token": "jwt_token_here"
 }
 ```
 
-### POST /auth/me
-
-Headers:
+### Get Current User
 
 ```http
-Authorization: Bearer <token>
+GET /auth/me
 ```
 
 Success response:
 
 ```json
 {
-  "sucess": true,
+  "success": true,
   "user": {
-    "_id": "...",
+    "_id": "user_id",
     "name": "Ahmed Faheem",
+    "email": "ahmed@example.com",
+    "createdAt": "2026-07-03T02:26:45.689Z",
+    "updatedAt": "2026-07-03T02:26:45.689Z"
+  }
+}
+```
+
+### Update Current User
+
+```http
+PUT /auth/me
+```
+
+Request body:
+
+```json
+{
+  "name": "Ahmed"
+}
+```
+
+Success response:
+
+```json
+{
+  "success": true,
+  "user": {
+    "_id": "user_id",
+    "name": "Ahmed",
     "email": "ahmed@example.com"
   }
 }
@@ -149,40 +196,26 @@ Success response:
 
 Base path: `/notes`
 
-| Method | Endpoint | Auth | Description |
+All notes routes require authentication.
+
+| Method | Endpoint | Description |
+| --- | --- | --- |
+| `POST` | `/notes` | Create a note |
+| `GET` | `/notes` | Get notes for the current user |
+| `GET` | `/notes/:id` | Get one note by id |
+| `PATCH` | `/notes/:id` | Update one note |
+| `DELETE` | `/notes/:id` | Delete one note |
+
+### Note Fields
+
+| Field | Type | Required | Notes |
 | --- | --- | --- | --- |
-| POST | `/notes` | Yes | Create a new note |
-| GET | `/notes` | Yes | Get all notes for the current user |
-| GET | `/notes/:id` | Yes | Get a single note by id |
-| PATCH | `/notes/:id` | Yes | Update a note |
-| DELETE | `/notes/:id` | Yes | Delete a note |
-
-### POST /notes
-
-Request body:
-
-```json
-{
-  "title": "Meeting notes",
-  "content": "Discuss project scope",
-  "category": "Work",
-  "tags": ["meeting", "project"],
-  "status": "Todo",
-  "isPinned": false
-}
-```
-
-Required fields:
-
-- `title`
-- `content`
-
-Optional fields:
-
-- `category`
-- `tags`
-- `status`: `Todo`, `In Progress`, `Done`
-- `isPinned`
+| `title` | String | Yes | Trimmed |
+| `content` | String | Yes | Trimmed |
+| `category` | String | No | Defaults to `General` |
+| `tags` | String array | No | Defaults to `[]` |
+| `status` | String | No | Defaults to `Todo` |
+| `isPinned` | Boolean | No | Defaults to `false` |
 
 Allowed categories:
 
@@ -199,25 +232,61 @@ Allowed statuses:
 - `In Progress`
 - `Done`
 
+### Create Note
+
+```http
+POST /notes
+```
+
+Request body:
+
+```json
+{
+  "title": "Meeting notes",
+  "content": "Discuss project scope",
+  "category": "Work",
+  "tags": ["meeting", "project"],
+  "status": "Todo",
+  "isPinned": false
+}
+```
+
 Success response:
 
 ```json
 {
   "success": true,
   "message": "Note created successfully",
-  "note": {}
+  "note": {
+    "_id": "note_id",
+    "title": "Meeting notes",
+    "content": "Discuss project scope",
+    "category": "Work",
+    "tags": ["meeting", "project"],
+    "status": "Todo",
+    "isPinned": false,
+    "userId": "user_id",
+    "createdAt": "2026-07-03T02:26:45.689Z",
+    "updatedAt": "2026-07-03T02:26:45.689Z"
+  }
 }
 ```
 
-### GET /notes
+### Get Notes
+
+```http
+GET /notes
+```
 
 Query parameters:
 
-- `search`: search by title or content
-- `category`: filter by category
-- `status`: filter by status
-- `page`: pagination page number
-- `limit`: number of items per page
+| Parameter | Description |
+| --- | --- |
+| `search` | Search by note title or content |
+| `category` | Filter by category |
+| `status` | Filter by status |
+| `page` | Page number |
+| `limit` | Number of notes per page |
 
 Example:
 
@@ -242,46 +311,66 @@ Success response:
 }
 ```
 
-### GET /notes/:id
+### Get Note By Id
+
+```http
+GET /notes/:id
+```
 
 Success response:
 
 ```json
 {
   "success": true,
-  "note": {}
+  "note": {
+    "_id": "6a471de5a7dd065797264ba1",
+    "title": "test",
+    "content": "test",
+    "category": "Programming",
+    "tags": [],
+    "status": "Todo",
+    "isPinned": false,
+    "userId": "6a46ef8662985c21864826fd",
+    "createdAt": "2026-07-03T02:26:45.689Z",
+    "updatedAt": "2026-07-03T02:26:45.689Z",
+    "__v": 0
+  }
 }
 ```
 
-### PATCH /notes/:id
+### Update Note
+
+```http
+PATCH /notes/:id
+```
 
 Request body:
 
 ```json
 {
-  "title": "Updated title"
+  "title": "Updated title",
+  "status": "In Progress"
 }
 ```
-
-Allowed fields:
-
-- `title`
-- `content`
-- `category`
-- `tags`
-- `status`
-- `isPinned`
 
 Success response:
 
 ```json
 {
   "success": true,
-  "note": {}
+  "note": {
+    "_id": "note_id",
+    "title": "Updated title",
+    "status": "In Progress"
+  }
 }
 ```
 
-### DELETE /notes/:id
+### Delete Note
+
+```http
+DELETE /notes/:id
+```
 
 Success response:
 
@@ -294,7 +383,7 @@ Success response:
 
 ## Error Format
 
-Validation and request errors return JSON responses such as:
+General errors:
 
 ```json
 {
@@ -303,7 +392,7 @@ Validation and request errors return JSON responses such as:
 }
 ```
 
-Validation middleware can also return field-level errors:
+Validation errors:
 
 ```json
 {
@@ -319,292 +408,7 @@ Validation middleware can also return field-level errors:
 
 ## Notes
 
-- Note IDs must be valid MongoDB ObjectIds.
-- Notes are always scoped to the authenticated user.
-- The `/notes` route supports searching, filtering, and pagination.
-# Backend API
-
-This backend is an Express + MongoDB API for user authentication and note management.
-
-## Setup
-
-1. Install dependencies:
-
-```bash
-npm install
-```
-
-2. Create a `.env` file in the backend folder with at least:
-
-```env
-PORT=5000
-MONGO_URI=your_mongodb_connection_string
-JWT_SECRET=your_secret_key
-```
-
-3. Start the server:
-
-```bash
-npm run dev
-```
-
-The API runs on `http://localhost:<PORT>`.
-
-## Authentication
-
-Most note routes require a JWT in the request header:
-
-```http
-Authorization: Bearer <token>
-```
-
-You get the token from the login endpoint.
-
-## API Endpoints
-
-### Health
-
-| Method | Endpoint | Auth | Description |
-| --- | --- | --- | --- |
-| GET | / | No | Basic health check |
-
-### Auth Routes
-
-Base path: `/auth`
-
-| Method | Endpoint | Auth | Description |
-| --- | --- | --- | --- |
-| POST | /auth/register | No | Register a new user |
-| POST | /auth/login | No | Login and return a JWT token |
-| POST | /auth/me | Yes | Get the current authenticated user |
-
-#### POST /auth/register
-
-Request body:
-
-```json
-{
-  "name": "Ahmed Faheem",
-  "email": "ahmed@example.com",
-  "password": "password123"
-}
-```
-
-Validation rules:
-
-- name: at least 3 characters
-- email: valid email
-- password: at least 8 characters
-
-Success response:
-
-```json
-{
-  "sucess": true,
-  "message": "User registered successfully",
-  "user": {
-    "name": "Ahmed Faheem",
-    "email": "ahmed@example.com"
-  }
-}
-```
-
-#### POST /auth/login
-
-Request body:
-
-```json
-{
-  "email": "ahmed@example.com",
-  "password": "password123"
-}
-```
-
-Success response:
-
-```json
-{
-  "sucess": true,
-  "token": "jwt_token_here"
-}
-```
-
-#### POST /auth/me
-
-Headers:
-
-```http
-Authorization: Bearer <token>
-```
-
-Success response:
-
-```json
-{
-  "sucess": true,
-  "user": {
-    "_id": "...",
-    "name": "Ahmed Faheem",
-    "email": "ahmed@example.com"
-  }
-}
-```
-
-### Notes Routes
-
-Base path: `/notes`
-
-| Method | Endpoint | Auth | Description |
-| --- | --- | --- | --- |
-| POST | /notes | Yes | Create a new note |
-| GET | /notes | Yes | Get all notes for the current user |
-| GET | /notes/:id | Yes | Get a single note by id |
-| PATCH | /notes/:id | Yes | Update a note |
-| DELETE | /notes/:id | Yes | Delete a note |
-
-#### POST /notes
-
-Request body:
-
-```json
-{
-  "title": "Meeting notes",
-  "content": "Discuss project scope",
-  "category": "Work",
-  "tags": ["meeting", "project"],
-  "status": "Todo",
-  "isPinned": false
-}
-```
-
-Required fields:
-
-- title
-- content
-
-Optional fields:
-
-- category
-- tags
-- status: Todo, In Progress, Done
-- isPinned
-
-Success response:
-
-```json
-{
-  "success": true,
-  "message": "Note created successfully",
-  "note": {}
-}
-```
-
-#### GET /notes
-
-Query parameters:
-
-- search: search by title or content
-- category: filter by category
-- status: filter by status
-- page: pagination page number
-- limit: number of items per page
-
-Example:
-
-```http
-GET /notes?search=meeting&category=Work&page=1&limit=10
-```
-
-Success response:
-
-```json
-{
-  "success": true,
-  "pagination": {
-    "totalNotes": 12,
-    "page": 1,
-    "limit": 10,
-    "totalPages": 2,
-    "hasNextPage": true,
-    "hasPrevPage": false
-  },
-  "notes": []
-}
-```
-
-#### GET /notes/:id
-
-Success response:
-
-```json
-{
-  "success": true,
-  "note": {}
-}
-```
-
-#### PATCH /notes/:id
-
-Request body:
-
-```json
-{
-  "title": "Updated title"
-}
-```
-
-At least one field is required.
-
-Allowed fields:
-
-- title
-- content
-- category
-- tags
-- status
-- isPinned
-
-Success response:
-
-```json
-{
-  "success": true,
-  "note": {}
-}
-```
-
-#### DELETE /notes/:id
-
-Success response:
-
-```json
-{
-  "success": true,
-  "message": "Note Deleted Successfully"
-}
-```
-
-## Error Format
-
-Validation and request errors return JSON responses such as:
-
-```json
-{
-  "success": false,
-  "message": "Error message here"
-}
-```
-
-Validation middleware can also return field-level errors:
-
-```json
-{
-  "success": false,
-  "errors": [
-    {
-      "field": "email",
-      "message": "Invalid email address"
-    }
-  ]
-}
-```
+- Notes are scoped to the authenticated user.
+- Note ids must be valid MongoDB ObjectIds.
+- Passwords are hashed before saving users.
+- The JWT payload stores the authenticated user's id.

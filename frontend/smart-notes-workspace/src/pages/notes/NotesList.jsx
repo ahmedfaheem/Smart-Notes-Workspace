@@ -7,56 +7,64 @@ import SearchBar from '../../components/Notes/List/Search';
 import NotesGrid from '../../components/Notes/List/NotesGrid';
 import Pagination from '../../components/Notes/List/Pagination';
 import { useSelector } from 'react-redux';
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'; 
+import { useQuery, useMutation, useQueryClient, keepPreviousData } from '@tanstack/react-query'; 
 import { getNotes, deleteNote as deleteNoteApi, setNotePin } from '../../services/notes';
 import IsLoading from '../../components/Shared/IsLoading';
 import PageHead from '../../components/Shared/PageHead';
 
 
 const TABS = ['All', 'Pinned', 'Todo', 'In Progress', 'Done'];
-const PER_PAGE = 3;
+const PER_PAGE = 6;
 
 export default function NotesList() {
   const token = useSelector(state => state.auth.token);
   const queryClient = useQueryClient();
 
-
   const [search, setSearch] = useState('');
+  const [debouncedSearch, setDebouncedSearch] = useState('');
   const [tab, setTab] = useState('All');
   const [page, setPage] = useState(1);
 
+  // Debounce search: wait 400ms after user stops typing before hitting the API
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setDebouncedSearch(search);
+    }, 400);
+    return () => clearTimeout(timer);
+  }, [search]);
+
+  // Reset to page 1 when debounced search or tab changes
+  useEffect(() => {
+    setPage(1);
+  }, [debouncedSearch, tab]);
 
   const handleSetSearch = (value) => { 
     setSearch(value); 
-    setPage(1); 
   };
   const handleSetTabs = (value) => { 
     setTab(value); 
     setPage(1); 
   };
 
-  const filter= {
-     search:search,
-     status: (tab == 'All' || tab == 'Pinned') ? '' : tab,
-     limit: PER_PAGE,
-     page: page,
-     isPinned: tab === 'Pinned' ? true : ''
-    }
+  const filter = {
+    search: debouncedSearch,
+    status: (tab == 'All' || tab == 'Pinned') ? '' : tab,
+    limit: PER_PAGE,
+    page: page,
+    isPinned: tab === 'Pinned' ? true : ''
+  };
 
-  const { data: fetchedData, isLoading, isError } = useQuery({
-    queryKey: ['notes', { page, search, tab }],
+  const { data: fetchedData, isLoading, isFetching, isError } = useQuery({
+    queryKey: ['notes', { page, search: debouncedSearch, tab }],
     queryFn: () => getNotes(token, filter),
+    placeholderData: keepPreviousData, // dont show loading state when switching pages
   });
 
- 
   const notes = fetchedData?.notes || [];
-  const totalPages = fetchedData?.pagination?.totalPages || 1;
+  const totalPages = fetchedData?.pagination?.totalPages || 0;
   const safePage = fetchedData?.pagination?.page || 1;
   const totalNotes = fetchedData?.pagination?.totalNotes || 0;
 
-  
-
-  
   const start = (safePage - 1) * PER_PAGE;
 
   const goTo = (p) => {
@@ -72,12 +80,12 @@ export default function NotesList() {
     return [1, '…', safePage - 1, safePage, safePage + 1, '…', totalPages];
   };
 
-
+  // Only show full-page loading on the very first load (no data yet)
   if (isLoading) return <IsLoading/>;
   if (isError) return <p className="text-center py-10 text-red-500">Failed to load notes.</p>;
 
   return (
-    <>
+    <div className={isFetching ? 'opacity-60 transition-opacity duration-200' : 'transition-opacity duration-200'}>
       <PageHead Pagetitle="Notes List"
       description="View and manage your notes in Smart Notes App"
        />
@@ -108,6 +116,6 @@ export default function NotesList() {
         goTo={goTo} 
         getPageNumbers={getPageNumbers} 
       />
-    </>
+    </div>
   );
 }

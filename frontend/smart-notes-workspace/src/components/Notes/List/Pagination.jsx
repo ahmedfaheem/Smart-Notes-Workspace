@@ -11,10 +11,10 @@ export default function Pagination({ totalPages, safePage, start, totalNotes, PE
                 <span className="font-semibold text-gray-900 dark:text-gray-100">{start + 1}</span>
                 {' '}–{' '}
                 <span className="font-semibold text-gray-900 dark:text-gray-100">
-                  {Math.min(start + PER_PAGE, totalPages)}
+                  {Math.min(start + PER_PAGE, totalNotes)}
                 </span>
                 {' '}of{' '}
-                <span className="font-semibold text-gray-900 dark:text-gray-100">{totalPages}</span>
+                <span className="font-semibold text-gray-900 dark:text-gray-100">{totalNotes}</span>
                 {' '}notes
               </p>
 

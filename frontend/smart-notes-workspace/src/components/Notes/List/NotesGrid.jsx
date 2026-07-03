@@ -4,8 +4,9 @@ import NoteCard from './NoteCard';
 import { Plus } from 'lucide-react';
 export default function NotesGrid({ totalPages, paginated, search }) {
   return (
-   <>
-       {totalPages === 0 ? (
+   <> 
+   
+       {paginated == 0 ? (
         <div className="flex flex-col items-center justify-center py-24 text-center">
           <div className="w-16 h-16 rounded-2xl bg-gray-100 dark:bg-white/5 flex items-center justify-center mb-4">
             {search ? <SearchIcon className="w-7 h-7 text-gray-400" /> : <StickyNote className="w-7 h-7 text-gray-400" />}
