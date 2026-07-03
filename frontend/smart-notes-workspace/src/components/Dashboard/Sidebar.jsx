@@ -1,6 +1,8 @@
 import { LayoutDashboard, User, LogOut, X, StickyNote, Home } from 'lucide-react';
 import { Link, useLocation } from 'react-router-dom';
-
+import { useDispatch } from 'react-redux';
+import { logout } from '../../features/auth/authSlice';
+import { useNavigate } from 'react-router-dom';
 export default function Sidebar({ isMobileOpen, closeSidebar }) {
   const location = useLocation();
 
@@ -14,6 +16,13 @@ export default function Sidebar({ isMobileOpen, closeSidebar }) {
         : 'text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-800/50'
     }`;
   };
+   const dispatch = useDispatch();
+   const navigate = useNavigate();
+  const handleLogout = () => {
+    localStorage.removeItem('token');
+    dispatch(logout()); 
+    navigate('/login');
+  }
 
   return (
     <aside className={`w-64 border-r border-gray-200 dark:border-white/10 bg-white dark:bg-[#111111] flex flex-col transition-transform duration-300 z-50 absolute lg:relative h-full ${isMobileOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}`}>
@@ -44,9 +53,10 @@ export default function Sidebar({ isMobileOpen, closeSidebar }) {
         <Link to="/" className="w-full flex items-center gap-3 px-3 py-2 rounded-md text-sm font-medium text-gray-500 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors">
           <Home className="w-4 h-4" /> Home
         </Link>
-        <Link to="/login" className="w-full flex items-center gap-3 px-3 py-2 rounded-md text-sm font-medium text-red-600 hover:bg-red-50 dark:hover:bg-red-500/10 transition-colors">
-          <LogOut className="w-4 h-4" /> Log out
-        </Link>
+        <button onClick={handleLogout} className="w-full flex items-center gap-3 px-3 py-2 rounded-md text-sm font-medium text-red-600 hover:bg-red-50 dark:hover:bg-red-500/10 transition-colors">
+          <LogOut className="w-4 h-4" />
+           Log out
+        </button>
       </div>
     </aside>
   );

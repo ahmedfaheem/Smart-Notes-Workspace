@@ -10,6 +10,10 @@ import Footer from '../components/Home/Footer';
 
 
 export default function HomePage() {
+   
+  
+
+
   return (
     <div className="min-h-screen bg-white dark:bg-[#0A0A0A] text-gray-900 dark:text-gray-100 transition-colors duration-300 overflow-x-hidden">
 

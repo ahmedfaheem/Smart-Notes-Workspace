@@ -11,7 +11,8 @@ import NotesList from "../pages/NotesList";
 import NoteDetail from "../pages/NoteDetail";
 import CreateNote from "../pages/CreateNote";
 import EditNote from "../pages/EditNote";
-
+import ProtectedAuthRoute from "./ProtectedRoutes/ProtectedAuthRoute";
+import ProtectedUserRoute from "./ProtectedRoutes/ProtectedUserRoute";
 const routes = createBrowserRouter([
     // Landing page
     {
@@ -21,7 +22,7 @@ const routes = createBrowserRouter([
     // Auth pages
     {
         path: "/",
-        element: <AuthLayout />,
+        element: <ProtectedAuthRoute>  <AuthLayout /> </ProtectedAuthRoute>,
         children: [
             { path: "login",    element: <Login /> },
             { path: "register", element: <Register /> },
@@ -30,7 +31,7 @@ const routes = createBrowserRouter([
     // Dashboard + nested pages
     {
         path: "/dashboard",
-        element: <DashboardLayout />,
+        element: <ProtectedUserRoute> <DashboardLayout /> </ProtectedUserRoute>,
         children: [
             { index: true,              element: <DashboardPage /> },
             { path: "notes",            element: <NotesList /> },
